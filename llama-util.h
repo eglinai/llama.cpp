@@ -248,6 +248,7 @@ struct llama_mmap
         size = file->size;
         int fd = fileno(file->fp);
         int flags = MAP_SHARED;
+        prefetch = 0;
         // prefetch/readahead impairs performance on NUMA systems
         if (numa)
         {
