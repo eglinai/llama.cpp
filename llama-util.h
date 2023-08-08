@@ -253,7 +253,6 @@ struct llama_mmap
         {
             prefetch = 0;
         }
-        prefetch = 0;
 #ifdef __linux__
         if (prefetch >= file->size)
         {
