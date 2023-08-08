@@ -127,11 +127,12 @@ static const std::map<e_model, size_t> &MEM_REQ_SCRATCH0(int n_ctx)
 static const std::map<e_model, size_t> &MEM_REQ_SCRATCH1()
 {
     static std::map<e_model, size_t> k_sizes = {
-        {MODEL_3B, 682ull * MB / 8},
-        {MODEL_7B, 1026ull * MB / 8},
-        {MODEL_13B, 1608ull * MB / 8},
-        {MODEL_30B, 3124ull * MB / 8},
-        {MODEL_65B, 5120ull * MB / 8},
+        {MODEL_3B, 128ull * MB},
+        {MODEL_7B, 160ull * MB},
+        {MODEL_13B, 192ull * MB},
+        {MODEL_30B, 256ull * MB},
+        {MODEL_65B, 384ull * MB}, // guess
+        {MODEL_70B, 304ull * MB},
     };
     return k_sizes;
 }
@@ -1379,9 +1380,9 @@ static void llama_model_load_internal(
             ggml_backend backend_norm;
             ggml_backend backend_output;
             if (n_gpu_layers > int(n_layer))
-            {   // NOLINT
-                // norm is not performance relevant on its own but keeping it in VRAM reduces data copying
-                // on Windows however this is detrimental unless everything is on the GPU
+            { // NOLINT
+              // norm is not performance relevant on its own but keeping it in VRAM reduces data copying
+              // on Windows however this is detrimental unless everything is on the GPU
 #ifndef _WIN32
                 backend_norm = low_vram ? GGML_BACKEND_CPU : LLAMA_BACKEND_OFFLOAD;
 #else
